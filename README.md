@@ -17,8 +17,8 @@ If you want to know how to use a model, how to get the model ckpts, please refer
 input, output
 
 
-<img src="./result_imgs/input/4402.jpg" width="500" /> <img src="./result_imgs/output/4402.jpg" width="500" /> 
-<img src="./result_imgs/input/4462.jpg" width="500" /> <img src="./result_imgs/output/4462.jpg" width="500" /> 
+<img src="./result_imgs/input/4402.jpg" width="300" /> <img src="./result_imgs/output/4402.jpg" width="300" /> 
+<img src="./result_imgs/input/4462.jpg" width="300" /> <img src="./result_imgs/output/4462.jpg" width="530000" /> 
 
 # Additional Guide
 
