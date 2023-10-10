@@ -1,0 +1,108 @@
+common:
+  run_label: "run_2"
+  accum_freq: 1
+  accum_after_epoch: -1
+  log_freq: 200
+  auto_resume: false
+  mixed_precision: true
+  grad_clip: 10.0
+dataset:
+  root_train:  "/home/kaist/hyebin/bokeh/data_train"
+  root_val: "/home/kaist/hyebin/bokeh/data_train"
+  name: "ebb"
+  category: "bokeh"
+  train_batch_size0: 4 # 8 # 32 # effective batch size is 128 (32 * 4 GPUs)
+  val_batch_size0: 8 # 16
+  eval_batch_size0: 1
+  workers: 8
+  persistent_workers: false
+  pin_memory: false
+image_augmentation:
+  random_crop:
+    enable: true
+    pad_if_needed: true
+    mask_fill: 255 # background idx is 255
+  random_horizontal_flip:
+    enable: true
+  resize:
+    enable: true
+    size: [512, 768] # [512, 512]
+    interpolation: "bicubic"
+  random_short_size_resize:
+    enable: true
+    interpolation: "bicubic"
+    short_side_min: 256
+    short_side_max: 768
+    max_img_dim: 1024
+  photo_metric_distort:
+    enable: true
+  random_rotate:
+    enable: true
+    angle: 10
+    mask_fill: 255 # background idx is 255
+  random_gaussian_noise:
+    enable: true
+sampler:
+  name: "batch_sampler"
+  bs:
+    crop_size_width: 768
+    crop_size_height: 512
+loss:
+  category: "bokeh_loss_fns"
+  ignore_idx: 255
+  bokeh:
+    name: "L1_msssim" # "msssim" "ssim" "L1_msssim"
+    msssim:
+      window_size: 11
+      size_average: true
+      val_range: true
+      normalize: "relu"
+optim:
+  name: "adamw"
+  weight_decay: 0.05 #0.01
+  no_decay_bn_filter_bias: true
+  adamw:
+    beta1: 0.9
+    beta2: 0.999
+scheduler:
+  name: "cosine"
+  is_iteration_based: false
+  max_epochs: 50
+  warmup_iterations: 500
+  warmup_init_lr: 0.00005
+  cosine:
+    max_lr: 1.e-4 # 0.0005
+    min_lr: 1.e-6
+model:
+  bokeh:
+    name: "encoder_decoder"
+    lr_multiplier: 1
+    features : 256
+    output_stride: 16
+    activation:
+      name: "relu"
+  classification:
+    name: "mobilevit_v2"
+    mitv2:
+      width_multiplier: 1.0
+      attn_norm_layer: "layer_norm_2d"
+    activation:
+      name: "swish"
+  normalization:
+    name: "sync_batch_norm"
+    momentum: 0.1
+  activation:
+    name: "swish"
+    inplace: false
+  layer:
+    global_pool: "mean"
+    conv_init: "kaiming_uniform"
+    linear_init: "normal"
+ema:
+  enable: true
+  momentum: 0.0005
+stats:
+  val: [ "loss", "psnr" ] # check this
+  train: [ "loss", "psnr" ] # check this
+  checkpoint_metric: "psnr" # check this
+  checkpoint_metric_max: true
